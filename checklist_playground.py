@@ -49,11 +49,12 @@ negative_adjectives = ['bad', 'unhealthy', 'expensive', 'boring', 'terrible', 'w
 
 masked_word_template = '{mask} is not a {adjective} option.'
 # noinspection PyTypeChecker
-samples = editor.template(masked_word_template, adjective=positive_adjectives, nsamples=100)
+samples = editor.template(masked_word_template, adjective=positive_adjectives, nsamples=100, labels=0)
 # noinspection PyTypeChecker
-samples += editor.template(masked_word_template, adjective=negative_adjectives, nsamples=100)
+samples += editor.template(masked_word_template, adjective=negative_adjectives, nsamples=100, labels=1)
 
 # print(samples.data)
+# print(samples.labels)  # labels allows us to automatically label the created instances, can be strs as well
 
 
 # Create function to predict sentiment
@@ -83,9 +84,22 @@ def predict_probabilities(utterances: list):
 # array contains the labels, the second array contains the confidences
 wrapped_predictions = PredictorWrapper.wrap_softmax(predict_probabilities)
 
-predictions, confidences = wrapped_predictions(['good', 'awesome', 'cool', 'horrible'])
-print(predictions)
-print(confidences)
+# predictions, confidences = wrapped_predictions(['good', 'awesome', 'cool', 'horrible'])
+# print(predictions)
+# print(confidences)
 
 # Create Tests
-minimum_functionality_test = MFT(samples.data, labels=samples.labels, )
+minimum_functionality_test = MFT(data=samples.data, labels=samples.labels, templates=masked_word_template,
+                                 name='Test Negation', capability='Negation',
+                                 description='Test whether the sentiment model is able to handle negation '
+                                             'appropriately.')
+
+minimum_functionality_test.run(wrapped_predictions)
+print(minimum_functionality_test.name)
+print(minimum_functionality_test.capability)
+print(minimum_functionality_test.description)
+print(minimum_functionality_test.templates)
+# print(minimum_functionality_test.data)
+# print(minimum_functionality_test.labels)
+# print(minimum_functionality_test.results)
+minimum_functionality_test.summary()
