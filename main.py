@@ -4,13 +4,14 @@
 # Create a challenge dataset and test AllenNLP models
 
 import re
+import json
 from checklist.editor import Editor
 from checklist.pred_wrapper import PredictorWrapper
 from checklist.test_types import MFT, INV, DIR
 from checklist.expect import Expect
 from checklist.test_suite import TestSuite
 from allennlp_models import pretrained
-from nltk.corpus import verbnet
+from nltk.corpus import verbnet as vn
 
 
 # def write_dataset_and_predictions_to_json(results):
@@ -22,9 +23,19 @@ from nltk.corpus import verbnet
 #         store['prediction_model2'] = model_prediction2
 
 
-# Load adjectives.txt and nouns.txt to use with editor
-# Adjectives taken from: https://gist.github.com/hugsy/8910dc78d208e40de42deb29e62df913
-# Nouns taken from:
+# Load adjectives and nouns to use with editor
+# Adjectives taken from: https://gist.github.com/hugsy/8910dc78d208e40de42deb29e62df913; random sample
+# Nouns taken from: https://github.com/edthrn/most-common-english-words; random sample
+# Transitive verbs obtained from VerbNet; random sample
+
+with open('unambiguous_nouns.json') as infile:
+    nouns = json.load(infile)
+
+with open('unambiguous_adjectives.json') as infile:
+    adjectives = json.load(infile)
+
+with open('transitive_verbs.json') as infile:
+    transitive_verbs = json.load(infile)
 
 
 # Extract predictions from models ######################################################################################
@@ -65,14 +76,6 @@ def get_predictions_bert_srl(sentences):
 
     return all_predictions
 
-    # all_predictions = []
-    # for sentence in sentences:
-    #     all_prediction_info = model_bert_srl.predict(sentence)
-    #     predictions = all_prediction_info['verbs'][0]['tags']
-    #     all_predictions.append(predictions)
-    #
-    # return all_predictions
-
 
 # Instantiate test suites to store the created tests
 suite = TestSuite()
@@ -82,7 +85,7 @@ editor = Editor()
 
 # Test 1a ##############################################################################################################
 # # Samples
-# all_verb_lemmas = verbnet.lemmas()
+# all_verb_lemmas = vn.lemmas()
 # infinitives = [l for l in all_verb_lemmas if re.match(r'^[a-z]+$', l)]
 #
 # samples_t1a = infinitives
@@ -96,7 +99,6 @@ editor = Editor()
 # Test 1b ##############################################################################################################
 # # Samples
 # infinitives = ['to ' + l for l in all_verb_lemmas if re.match(r'^[a-z]+$', l)]
-#
 # samples_t1b = infinitives
 #
 # # Test
@@ -106,47 +108,39 @@ editor = Editor()
 # suite.add(test_1b)
 
 # Test 2 ###############################################################################################################
-# Samples
-nouns = set()
-nouns.update(set(editor.suggest('This is a good {mask}.')), set(editor.suggest('This is a bad {mask}.')),
-             set(editor.suggest('This is a great {mask}.')), set(editor.suggest('This is a horrible {mask}.')),
-             set(editor.suggest('This is a fast {mask}.')), set(editor.suggest('This is a funny {mask}.')),
-             set(editor.suggest('This is a beautiful {mask}.')), set(editor.suggest('This is a distracting {mask}.')),
-             set(editor.suggest('This is a male {mask}.')), set(editor.suggest('This is a female {mask}.')))
-print(nouns)
-
-adjectives = set()
-adjectives.update(set(editor.suggest('This is a {mask} child.')), set(editor.suggest('This is a {mask} memory.')),
-             set(editor.suggest('This is a {mask} castle.')), set(editor.suggest('This is a {mask} person.')),
-             set(editor.suggest('This is a {mask} experiment.')), set(editor.suggest('This is a {mask} movie.')),
-             set(editor.suggest('This is a {mask} job.')), set(editor.suggest('This is a {mask} stone.')),
-             set(editor.suggest('This is a {mask} cat.')), set(editor.suggest('This is a {mask} headline.')))
-print(adjectives)
-
-name_list = editor.lexicons['male']
-
-# template_t2 = '{mask} exists.'
+# # Samples
+# template_t2 = 'The {noun} exists.'
+# samples_t2 = editor.template(template_t2, noun=list(nouns), product=True, remove_duplicates=True,
+#                              labels=['B-ARG1', 'I-ARG1', 'B-V', 'O'])
 #
-# samples_t2 = editor.template(template_t2, nsamples=200, remove_duplicates=True, labels=['B-ARG0', 'B-V'])
+# # Test
+# test_2 = MFT(data=samples_t2.data, labels=samples_t2.labels, name='Test_2', capability='Voc+PoS',
+#              description='Recognize noun phrases as participants.', templates=template_t2)
 #
-# print(samples_t2.data)
+# suite.add(test_2)
+
+# Test 3 ###############################################################################################################
+template_t3 = 'They {transitive_verb} it.'
 
 
 
 
+print(transitive_verbs)
+
+quit()
 
 # Run the tests ########################################################################################################
 # # Load models
-# model_srl = pretrained.load_predictor('structured-prediction-srl')
+model_srl = pretrained.load_predictor('structured-prediction-srl')
 # model_bert_srl = pretrained.load_predictor('structured-prediction-srl-bert')
 #
 # # Wrap model predictions to a dummy confidence score of 1.0
-# wrapped_model_srl = PredictorWrapper.wrap_predict(get_predictions_srl)
+wrapped_model_srl = PredictorWrapper.wrap_predict(get_predictions_srl)
 # wrapped_model_bert_srl = PredictorWrapper.wrap_predict(get_predictions_bert_srl)
 #
 # # Run test suite
-# suite.run(wrapped_model_srl)
-# suite.summary()
+suite.run(wrapped_model_srl)
+suite.summary()
 #
 # suite.run(wrapped_model_bert_srl)
 # suite.summary()
