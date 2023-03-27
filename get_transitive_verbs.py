@@ -25,3 +25,9 @@ ditransitive_verbs = ['give'] + vn.lemmas('give-13.1')
 
 with open('ditransitive_verbs.json', 'w') as outfile:
     json.dump(ditransitive_verbs, outfile)
+
+# Causative-Inchoative
+causative_inchoative_verbs = vn.lemmas('break-45.1')
+
+with open('causative_inchoative_verbs.json', 'w') as outfile:
+    json.dump(causative_inchoative_verbs, outfile)
