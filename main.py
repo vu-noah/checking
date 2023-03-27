@@ -59,7 +59,9 @@ def write_dataset_and_predictions_to_json(test):
     :return:
     """
     dataset = {'test_name': test.name, 'capability': test.capability, 'description': test.description,
-               'data': test.data, 'expectation': test.labels[0], 'predictions': test.results['preds']}
+               'templates': test.templates, 'data': test.data,
+               'data, expectation, prediction': [tup for tup in zip(test.data, test.labels, test.results['preds'])]}
+
     with open('dataset.json', 'a') as outfile:
         json.dump(dataset, outfile, indent=4)
         outfile.write('\n')
@@ -205,54 +207,63 @@ suite = TestSuite()
 # suite.add(test_6)
 
 # Test 7 ###############################################################################################################
-template_t7_1 = 'He killed her on {weekday} in {city}.'
-template_t7_2 = 'He killed her on {weekday} in {country}.'
-template_t7_3 = 'He killed her at {time} in {city}.'
-template_t7_4 = 'He killed her at {time} in {country}.'
-
-samples_t7 = editor.template(template_t7_1, weekday=weekdays, city=cities, nsamples=100, remove_duplicates=True,
-                             labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
-                                     'O'])
-samples_t7 += editor.template(template_t7_2, weekday=weekdays, country=countries, nsamples=100, remove_duplicates=True,
-                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
-                                      'O'])
-samples_t7 += editor.template(template_t7_3, time=times, city=cities, nsamples=100, remove_duplicates=True,
-                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
-                                      'O'])
-samples_t7 += editor.template(template_t7_4, time=times, country=countries, nsamples=100,
-                              remove_duplicates=True, labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP',
-                                                              'B-ARGM-LOC', 'I-ARGM-LOC', 'O'])
-
-test_7 = MFT(data=samples_t7.data, labels=samples_t7.labels, name='Test_7', capability='NER (R)',
-             description='Label LOC & TMP correctly if in wrong order.',
-             templates=[template_t7_1, template_t7_2, template_t7_3, template_t7_4])
-
-suite.add(test_7)
+# template_t7_1 = 'He killed her on {weekday} in {city}.'
+# template_t7_2 = 'He killed her on {weekday} in {country}.'
+# template_t7_3 = 'He killed her at {time} in {city}.'
+# template_t7_4 = 'He killed her at {time} in {country}.'
+#
+# samples_t7 = editor.template(template_t7_1, weekday=weekdays, city=cities, nsamples=100, remove_duplicates=True,
+#                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+#                                      'O'])
+# samples_t7 += editor.template(template_t7_2, weekday=weekdays, country=countries, nsamples=100, remove_duplicates=True,
+#                               labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+#                                       'O'])
+# samples_t7 += editor.template(template_t7_3, time=times, city=cities, nsamples=100, remove_duplicates=True,
+#                               labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+#                                       'O'])
+# samples_t7 += editor.template(template_t7_4, time=times, country=countries, nsamples=100,
+#                               remove_duplicates=True, labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP',
+#                                                               'B-ARGM-LOC', 'I-ARGM-LOC', 'O'])
+#
+# test_7 = MFT(data=samples_t7.data, labels=samples_t7.labels, name='Test_7', capability='NER (R)',
+#              description='Label LOC & TMP correctly if in wrong order.',
+#              templates=[template_t7_1, template_t7_2, template_t7_3, template_t7_4])
+#
+# suite.add(test_7)
 
 # Test 8 ###############################################################################################################
-template_t8_1 = 'He killed her on {weekday} in {city}.'
-template_t8_2 = 'He killed her on {weekday} in {country}.'
-template_t8_3 = 'He killed her at {time} in {city}.'
-template_t8_4 = 'He killed her at {time} in {country}.'
+template_t8_1 = 'On {weekday} in {city}, he killed her.'
+template_t8_2 = 'On {weekday} in {country}, he killed her.'
+template_t8_3 = 'At {time} in {city}, he killed her.'
+template_t8_4 = 'At {time} in {country}, he killed her.'
 
 samples_t8 = editor.template(template_t8_1, weekday=weekdays, city=cities, nsamples=100, remove_duplicates=True,
-                             labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
-                                     'O'])
+                             labels=['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC', 'O', 'B-ARG0', 'B-V',
+                                     'B-ARG1', 'O'])
 samples_t8 += editor.template(template_t8_2, weekday=weekdays, country=countries, nsamples=100, remove_duplicates=True,
-                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
-                                      'O'])
+                              labels=['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC', 'O', 'B-ARG0', 'B-V',
+                                      'B-ARG1', 'O'])
 samples_t8 += editor.template(template_t8_3, time=times, city=cities, nsamples=100, remove_duplicates=True,
-                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
-                                      'O'])
-samples_t8 += editor.template(template_t8_4, time=times, country=countries, nsamples=100,
-                              remove_duplicates=True, labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP',
-                                                              'B-ARGM-LOC', 'I-ARGM-LOC', 'O'])
+                              labels=['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC', 'O', 'B-ARG0', 'B-V',
+                                      'B-ARG1', 'O'])
+samples_t8 += editor.template(template_t8_4, time=times, country=countries, nsamples=100, remove_duplicates=True,
+                              labels=['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC', 'O', 'B-ARG0', 'B-V',
+                                      'B-ARG1', 'O'])
 
 test_8 = MFT(data=samples_t8.data, labels=samples_t8.labels, name='Test_8', capability='NER (R)',
-             description='Label LOC & TMP correctly if in wrong order.',
+             description='Label LOC & TMP correctly if at the beginning of the sentence.',
              templates=[template_t8_1, template_t8_2, template_t8_3, template_t8_4])
 
 suite.add(test_8)
+
+# Test 9 ###############################################################################################################
+template_t9_1 = '{male} killed her.'
+template_t9_2 = ''
+
+
+test_9 = MFT(data=samples_t9.data, labels=samples_t9.labels, name='Test_9', capability='Semantics (C)',
+             description='Distinguish animate and volitional from inanimate and non-volitional participants.',
+             templates=template_t9)
 
 
 # Run the tests ########################################################################################################
@@ -271,5 +282,6 @@ suite.summary()
 # suite.run(wrapped_model_bert_srl)
 # suite.summary()
 
-# for test in [test_1a, test_1b, test_2, test_3, test_4, test_5, test_6, test_7]:
-#     write_dataset_and_predictions_to_json(test)
+# test_1a, test_1b, test_2, test_3, test_4, test_5, test_6, test_7, test_8
+for test in [test_8]:
+    write_dataset_and_predictions_to_json(test)
