@@ -252,7 +252,7 @@ test_8 = MFT(data=samples_t8.data, labels=samples_t8.labels, name='Test_8', capa
              description='Label LOC & TMP correctly if in wrong order.',
              templates=[template_t8_1, template_t8_2, template_t8_3, template_t8_4])
 
-suite.add(test_7)
+suite.add(test_8)
 
 
 # Run the tests ########################################################################################################
