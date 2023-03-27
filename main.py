@@ -14,31 +14,6 @@ from allennlp_models import pretrained
 from nltk.corpus import verbnet as vn
 
 
-# def write_dataset_and_predictions_to_json(results):
-#     store = {}
-#     for result in results:
-#         store['data'] = results.data
-#         store['expectation'] = expectations
-#         store['prediction_model1'] = model_prediction
-#         store['prediction_model2'] = model_prediction2
-
-
-# Load adjectives and nouns to use with editor
-# Adjectives taken from: https://gist.github.com/hugsy/8910dc78d208e40de42deb29e62df913; random sample
-# Nouns taken from: https://github.com/edthrn/most-common-english-words; random sample
-# Transitive verbs obtained from VerbNet; random sample
-
-with open('unambiguous_nouns.json') as infile:
-    nouns = json.load(infile)
-
-with open('unambiguous_adjectives.json') as infile:
-    adjectives = json.load(infile)
-
-with open('transitive_verbs.json') as infile:
-    transitive_verbs = json.load(infile)
-
-
-# Extract predictions from models ######################################################################################
 def get_predictions_srl(sentences):
     """
 
@@ -77,60 +52,211 @@ def get_predictions_bert_srl(sentences):
     return all_predictions
 
 
-# Instantiate test suites to store the created tests
-suite = TestSuite()
+def write_dataset_and_predictions_to_json(test):
+    """
+
+    :param test:
+    :return:
+    """
+    dataset = {'test_name': test.name, 'capability': test.capability, 'description': test.description,
+               'data': test.data, 'expectation': test.labels[0], 'predictions': test.results['preds']}
+    with open('dataset.json', 'a') as outfile:
+        json.dump(dataset, outfile, indent=4)
+        outfile.write('\n')
+
 
 # Instantiate the editor to create test instances
 editor = Editor()
 
+# Load adjectives and nouns to use with editor
+# Adjectives taken from: https://gist.github.com/hugsy/8910dc78d208e40de42deb29e62df913; random sample
+# Nouns taken from: https://github.com/edthrn/most-common-english-words; random sample
+# Transitive verbs obtained from VerbNet; random sample
+
+with open('unambiguous_nouns.json') as infile:
+    nouns = json.load(infile)
+
+with open('unambiguous_adjectives.json') as infile:
+    adjectives = json.load(infile)
+
+with open('transitive_verbs.json') as infile:
+    transitive_verbs = json.load(infile)
+
+with open('ditransitive_verbs.json') as infile:
+    ditransitive_verbs = json.load(infile)
+
+weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+times = ['midnight', 'noon']
+cities = [c for c in editor.lexicons['city'] if all([' ' not in c, '-' not in c])]
+countries = [c for c in editor.lexicons['country'] if all([' ' not in c, '-' not in c])]
+clocktimes = ['three o\'clock', 'six o\'clock', 'nine o\'clock', 'twelve o\'clock'] + \
+             [str(i) + 'pm' for i in range(1, 12)] + [str(i) + 'am' for i in range(1, 12)]
+
+# Instantiate test suites to store the created tests
+suite = TestSuite()
+
 # Test 1a ##############################################################################################################
-# # Samples
 # all_verb_lemmas = vn.lemmas()
-# infinitives = [l for l in all_verb_lemmas if re.match(r'^[a-z]+$', l)]
+# infinitives = [l for l in all_verb_lemmas if re.match(r'^[a-z]+$', l)]  # I do not want lemmas with underscores
 #
 # samples_t1a = infinitives
 #
-# # Test
 # test_1a = MFT(data=samples_t1a, labels=[['B-V'] for _ in range(len(samples_t1a))], name='Test_1a',
-#               capability='Voc+PoS', description='Recognize predicates.', templates='{verb}')
+#               capability='Voc+PoS (C)', description='Recognize predicates.', templates='{verb}')
 #
 # suite.add(test_1a)
 
 # Test 1b ##############################################################################################################
-# # Samples
 # infinitives = ['to ' + l for l in all_verb_lemmas if re.match(r'^[a-z]+$', l)]
 # samples_t1b = infinitives
 #
-# # Test
 # test_1b = MFT(data=samples_t1b, labels=[['O', 'B-V'] for _ in range(len(samples_t1b))], name='Test_1b',
-#               capability='Voc+PoS', description='Recognize predicates.', templates='to {verb}')
+#               capability='Voc+PoS (C)', description='Recognize predicates.', templates='to {verb}')
 #
 # suite.add(test_1b)
 
 # Test 2 ###############################################################################################################
-# # Samples
 # template_t2 = 'The {noun} exists.'
 # samples_t2 = editor.template(template_t2, noun=list(nouns), product=True, remove_duplicates=True,
 #                              labels=['B-ARG1', 'I-ARG1', 'B-V', 'O'])
 #
-# # Test
-# test_2 = MFT(data=samples_t2.data, labels=samples_t2.labels, name='Test_2', capability='Voc+PoS',
+# test_2 = MFT(data=samples_t2.data, labels=samples_t2.labels, name='Test_2', capability='Voc+PoS (C)',
 #              description='Recognize noun phrases as participants.', templates=template_t2)
 #
 # suite.add(test_2)
 
 # Test 3 ###############################################################################################################
-template_t3 = 'They {transitive_verb} it.'
+# template_t3 = 'They {transitive_verb} it.'
+# samples_t3 = editor.template(template_t3, transitive_verb=transitive_verbs, product=True, remove_duplicates=True,
+#                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'O'])
+#
+# test_3 = MFT(data=samples_t3.data, labels=samples_t3.labels, name='Test_3', capability='Voc+PoS (C)',
+#              description='Recognize transitive predicates.', templates=template_t3)
+#
+# suite.add(test_3)
 
+# Test 4 ###############################################################################################################
+# template_t4_1 = 'They {ditransitive_verb} it to {male}.'
+# samples_t4 = editor.template(template_t4_1, ditransitive_verb=ditransitive_verbs, nsamples=50, remove_duplicates=True,
+#                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARG2', 'I-ARG2', 'O'])
+#
+# template_t4_2 = 'They {ditransitive_verb} it to {female}.'
+# samples_t4 += editor.template(template_t4_2, ditransitive_verb=ditransitive_verbs, nsamples=50, remove_duplicates=True,
+#                               labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARG2', 'I-ARG2', 'O'])
+#
+# test_4 = MFT(data=samples_t4.data, labels=samples_t4.labels, name='Test_4', capability='Voc+PoS (C)',
+#              description='Recognize ditransitive predicates.', templates=[template_t4_1, template_t4_2])
+#
+# suite.add(test_4)
 
+# Test 5 ###############################################################################################################
+# template_t5_1 = '{noun}'
+# template_t5_2 = '{male}'
+# template_t5_3 = '{female}'
+# template_t5_4 = '{noun} {noun}'
+# template_t5_5 = '{male} {noun}'
+# template_t5_6 = '{female} {noun}'
+# template_t5_7 = '{noun} {male}'
+# template_t5_8 = '{noun} {female}'
+# template_t5_9 = '{male} {male}'
+# template_t5_10 = '{female} {female}'
+#
+# samples_t5 = editor.template(template_t5_1, noun=nouns, product=True, remove_duplicates=True, labels='No_prediction')
+# samples_t5 += editor.template(template_t5_2, noun=nouns, product=True, remove_duplicates=True, labels='No_prediction')
+# samples_t5 += editor.template(template_t5_3, noun=nouns, product=True, remove_duplicates=True, labels='No_prediction')
+#
+# for template in [template_t5_4, template_t5_5, template_t5_6, template_t5_7, template_t5_8, template_t5_9,
+#                  template_t5_10]:
+#     samples_t5 += editor.template(template, noun=nouns, nsamples=100, remove_duplicates=True, labels='No_prediction')
+#
+# test_5 = MFT(data=samples_t5.data, labels=samples_t5.labels, name='Test_5', capability='Voc+PoS (C)',
+#              description='Label roles only when predicate exists.',
+#              templates=[template_t5_1, template_t5_2, template_t5_3, template_t5_4, template_t5_5, template_t5_6,
+#                         template_t5_7, template_t5_8, template_t5_9, template_t5_10])
+#
+# suite.add(test_5)
 
+# Test 6 ###############################################################################################################
+# template_t6_1 = 'He killed her in {city} on {weekday}.'
+# template_t6_2 = 'He killed her in {country} on {weekday}.'
+# template_t6_3 = 'He killed her in {city} at {time}.'
+# template_t6_4 = 'He killed her in {country} at {time}.'
+# template_t6_5 = 'He killed her at {clocktime}.'
+#
+# samples_t6 = editor.template(template_t6_1, weekday=weekdays, city=cities, nsamples=100, remove_duplicates=True,
+#                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-LOC', 'I-ARGM-LOC', 'B-ARGM-TMP', 'I-ARGM-TMP',
+#                                      'O'])
+# samples_t6 += editor.template(template_t6_2, weekday=weekdays, country=countries, nsamples=100, remove_duplicates=True,
+#                               labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-LOC', 'I-ARGM-LOC', 'B-ARGM-TMP', 'I-ARGM-TMP',
+#                                       'O'])
+# samples_t6 += editor.template(template_t6_3, time=times, city=cities, nsamples=100, remove_duplicates=True,
+#                               labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-LOC', 'I-ARGM-LOC', 'B-ARGM-TMP',
+#                                       'I-ARGM-TMP', 'O'])
+# samples_t6 += editor.template(template_t6_4, time=times, country=countries, nsamples=100,
+#                               remove_duplicates=True, labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-LOC', 'I-ARGM-LOC',
+#                                                               'B-ARGM-TMP', 'I-ARGM-TMP', 'O'])
+# samples_t6 += editor.template(template_t6_5, clocktime=clocktimes, product=True, remove_duplicates=True,
+#                               labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'O'])
+#
+# test_6 = MFT(data=samples_t6.data, labels=samples_t6.labels, name='Test_6', capability='NER (C)',
+#              description='Recognize locations & temporal expressions.',
+#              templates=[template_t6_1, template_t6_2, template_t6_3, template_t6_4, template_t6_5])
+#
+# suite.add(test_6)
 
-print(transitive_verbs)
+# Test 7 ###############################################################################################################
+template_t7_1 = 'He killed her on {weekday} in {city}.'
+template_t7_2 = 'He killed her on {weekday} in {country}.'
+template_t7_3 = 'He killed her at {time} in {city}.'
+template_t7_4 = 'He killed her at {time} in {country}.'
 
-quit()
+samples_t7 = editor.template(template_t7_1, weekday=weekdays, city=cities, nsamples=100, remove_duplicates=True,
+                             labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+                                     'O'])
+samples_t7 += editor.template(template_t7_2, weekday=weekdays, country=countries, nsamples=100, remove_duplicates=True,
+                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+                                      'O'])
+samples_t7 += editor.template(template_t7_3, time=times, city=cities, nsamples=100, remove_duplicates=True,
+                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+                                      'O'])
+samples_t7 += editor.template(template_t7_4, time=times, country=countries, nsamples=100,
+                              remove_duplicates=True, labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP',
+                                                              'B-ARGM-LOC', 'I-ARGM-LOC', 'O'])
+
+test_7 = MFT(data=samples_t7.data, labels=samples_t7.labels, name='Test_7', capability='NER (R)',
+             description='Label LOC & TMP correctly if in wrong order.',
+             templates=[template_t7_1, template_t7_2, template_t7_3, template_t7_4])
+
+suite.add(test_7)
+
+# Test 8 ###############################################################################################################
+template_t8_1 = 'He killed her on {weekday} in {city}.'
+template_t8_2 = 'He killed her on {weekday} in {country}.'
+template_t8_3 = 'He killed her at {time} in {city}.'
+template_t8_4 = 'He killed her at {time} in {country}.'
+
+samples_t8 = editor.template(template_t8_1, weekday=weekdays, city=cities, nsamples=100, remove_duplicates=True,
+                             labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+                                     'O'])
+samples_t8 += editor.template(template_t8_2, weekday=weekdays, country=countries, nsamples=100, remove_duplicates=True,
+                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+                                      'O'])
+samples_t8 += editor.template(template_t8_3, time=times, city=cities, nsamples=100, remove_duplicates=True,
+                              labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-LOC', 'I-ARGM-LOC',
+                                      'O'])
+samples_t8 += editor.template(template_t8_4, time=times, country=countries, nsamples=100,
+                              remove_duplicates=True, labels=['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP',
+                                                              'B-ARGM-LOC', 'I-ARGM-LOC', 'O'])
+
+test_8 = MFT(data=samples_t8.data, labels=samples_t8.labels, name='Test_8', capability='NER (R)',
+             description='Label LOC & TMP correctly if in wrong order.',
+             templates=[template_t8_1, template_t8_2, template_t8_3, template_t8_4])
+
+suite.add(test_7)
+
 
 # Run the tests ########################################################################################################
-# # Load models
+# Load models
 model_srl = pretrained.load_predictor('structured-prediction-srl')
 # model_bert_srl = pretrained.load_predictor('structured-prediction-srl-bert')
 #
@@ -138,10 +264,12 @@ model_srl = pretrained.load_predictor('structured-prediction-srl')
 wrapped_model_srl = PredictorWrapper.wrap_predict(get_predictions_srl)
 # wrapped_model_bert_srl = PredictorWrapper.wrap_predict(get_predictions_bert_srl)
 #
-# # Run test suite
-suite.run(wrapped_model_srl)
+# Run test suite
+suite.run(wrapped_model_srl, verbose=True)
 suite.summary()
 #
 # suite.run(wrapped_model_bert_srl)
 # suite.summary()
 
+# for test in [test_1a, test_1b, test_2, test_3, test_4, test_5, test_6, test_7]:
+#     write_dataset_and_predictions_to_json(test)
