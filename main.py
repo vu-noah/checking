@@ -5,7 +5,6 @@
 
 import re
 import json
-
 import numpy
 from checklist.editor import Editor
 from checklist.pred_wrapper import PredictorWrapper
