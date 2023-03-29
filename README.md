@@ -14,6 +14,7 @@ Within /bert_srl and /srl:
 Files:
 - main.py: the main script
 - test_runs.txt: a save file in which the number of times the main script has been run is stored
+- requirements.txt: package requirements
 
 Execution of the code:
 - run main.py from the command line in the following way:

@@ -1,0 +1,4 @@
+numpy~=1.24.2
+checklist~=0.0.11
+nltk~=3.8.1
+spacy~=3.0.9
