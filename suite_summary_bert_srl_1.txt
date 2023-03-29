@@ -1,0 +1,210 @@
+Ambiguity (C)
+
+Test 17
+Test cases:      46
+Fails (rate):    0 (0.0%)
+
+
+
+
+Robustness (R)
+
+Test 16
+Test cases:      200
+Fails (rate):    72 (36.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARG2', 'I-ARG2', 'O'] They give it to Scott.
+['B-ARG0', 'O', 'B-V', 'O', 'O', 'O', 'O'] Theyg ive it to Scott.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] They clench it.
+No_prediction The yclench it.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] They dread it.
+['O', 'B-V', 'O', 'O'] They drea dit.
+
+----
+
+
+
+
+Alternation (C)
+
+Test 11
+Test cases:      100
+Fails (rate):    0 (0.0%)
+
+
+Test 12
+Test cases:      8
+Fails (rate):    0 (0.0%)
+
+
+Test 13
+Test cases:      13
+Fails (rate):    1 (7.7%)
+
+Example fails:
+['B-ARG0', 'B-ARGM-MOD', 'B-V', 'B-ARG1', 'I-ARG1', 'O'] He will chip the window.
+['B-ARG0', 'I-ARG0', 'B-ARGM-MOD', 'B-V', 'O'] The window will chip.
+
+----
+
+
+
+
+Semantics (C)
+
+Test 9
+Test cases:      25
+Fails (rate):    24 (96.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Frank killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The chainsaw killed her.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Don killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The corkscrew killed her.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Louis killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The bradawl killed her.
+
+----
+
+
+
+
+NER (C)
+
+Test 6
+Test cases:      426
+Fails (rate):    3 (0.7%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-MNR', 'I-ARGM-MNR', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Garland at noon.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-MNR', 'I-ARGM-MNR', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Wichita at noon.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-MNR', 'I-ARGM-MNR', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Wichita on Wednesday.
+----
+
+
+
+
+Word Order (R)
+
+Test 14
+Test cases:      200
+Fails (rate):    191 (95.5%)
+
+Example fails:
+['B-ARG0', 'I-ARG0', 'I-ARG0', 'B-V', 'O'] They the light understand.
+----
+No_prediction They the hat gash.
+----
+['B-ARG0', 'I-ARG0', 'I-ARG0', 'B-V', 'O'] They the calendar hypnotize.
+----
+
+
+
+
+NER (R)
+
+Test 7
+Test cases:      400
+Fails (rate):    6 (1.5%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O'] He killed her at midnight in Garland.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O'] He killed her on Wednesday in Garland.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O'] He killed her at midnight in Garland.
+----
+
+
+Test 8
+Test cases:      400
+Fails (rate):    6 (1.5%)
+
+Example fails:
+['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] On Monday in Garland, he killed her.
+----
+['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] On Wednesday in Garland, he killed her.
+----
+['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] On Sunday in Wichita, he killed her.
+----
+
+
+
+
+Voc+PoS (C)
+
+Test 1a
+Test cases:      3559
+Fails (rate):    2162 (60.7%)
+
+Example fails:
+No_prediction dupe
+----
+No_prediction camouflage
+----
+No_prediction herd
+----
+
+
+Test 1b
+Test cases:      3559
+Fails (rate):    279 (7.8%)
+
+Example fails:
+No_prediction to bivouac
+----
+No_prediction to destarch
+----
+No_prediction to joggle
+----
+
+
+Test 2
+Test cases:      100
+Fails (rate):    0 (0.0%)
+
+
+Test 3
+Test cases:      100
+Fails (rate):    3 (3.0%)
+
+Example fails:
+No_prediction They sweet-talk it.
+----
+['B-ARG0', 'B-V', 'B-ARG2', 'O'] They order it.
+----
+['B-ARG0', 'B-V', 'B-ARG2', 'O'] They gouge it.
+----
+
+
+Test 4
+Test cases:      100
+Fails (rate):    0 (0.0%)
+
+
+Test 5
+Test cases:      1000
+Fails (rate):    42 (4.2%)
+
+Example fails:
+['B-V', 'O'] Ruth trouble
+----
+['B-V', 'B-ARG1'] ruin John
+----
+['B-V', 'B-ARGM-DIS'] gear Tom
+----
+
+
+
+

@@ -1,0 +1,258 @@
+Ambiguity (C)
+
+Test 17
+Test cases:      46
+Fails (rate):    8 (17.4%)
+
+Example fails:
+['B-ARG2', 'B-V', 'B-ARG1', 'I-ARG1', 'O'] Milan touches the dog.
+----
+['O', 'B-V', 'B-ARG1', 'I-ARG1', 'O'] Jackson touches the dog.
+----
+['B-ARG2', 'B-V', 'B-ARG1', 'I-ARG1', 'O'] Arizona touches the dog.
+----
+
+
+
+
+Robustness (R)
+
+Test 16
+Test cases:      200
+Fails (rate):    114 (57.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] They dread it.
+['B-ARG0', 'B-V', 'B-ARG2', 'O'] They drea dit.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARG2', 'I-ARG2', 'O'] They loan it to Robert.
+No_prediction hTey loan it to Robert.
+
+----
+No_prediction They sweet-talk it.
+['O', 'B-ARG0', 'O', 'B-V', 'B-ARG1', 'O'] Theys weet-talk it.
+
+----
+
+
+
+
+Alternation (C)
+
+Test 11
+Test cases:      100
+Fails (rate):    7 (7.0%)
+
+Example fails:
+['O', 'B-V', 'O', 'O'] Jay killed Kathy.
+['B-ARG1', 'B-V', 'B-V', 'B-ARG0', 'I-ARG0', 'O'] Kathy was killed by Jay.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Frank killed Patricia.
+['B-ARG1', 'B-V', 'B-V', 'B-ARG2', 'I-ARG2', 'O'] Patricia was killed by Frank.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Jason killed Nicole.
+['B-ARGM-TMP', 'B-V', 'B-V', 'B-ARG0', 'I-ARG0', 'O'] Nicole was killed by Jason.
+
+----
+
+
+Test 12
+Test cases:      8
+Fails (rate):    6 (75.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'B-ARG2', 'I-ARG2', 'O'] They render the money to her.
+['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'I-ARG1', 'O'] They render her the money.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'B-ARG2', 'I-ARG2', 'O'] They loan the money to her.
+['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'I-ARG1', 'O'] They loan her the money.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'B-ARGM-DIR', 'I-ARGM-DIR', 'O'] They peddle the money to her.
+['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'I-ARG1', 'O'] They peddle her the money.
+
+----
+
+
+Test 13
+Test cases:      13
+Fails (rate):    2 (15.4%)
+
+Example fails:
+['B-ARG0', 'B-ARGM-MOD', 'B-V', 'B-ARG1', 'I-ARG1', 'O'] He will fracture the window.
+['B-ARG0', 'I-ARG0', 'B-ARGM-MOD', 'B-V', 'O'] The window will fracture.
+
+----
+['B-ARG0', 'B-ARGM-MOD', 'B-V', 'B-ARG1', 'I-ARG1', 'O'] He will shatter the window.
+['B-ARG0', 'I-ARG0', 'B-ARGM-MOD', 'B-V', 'O'] The window will shatter.
+
+----
+
+
+
+
+Semantics (C)
+
+Test 9
+Test cases:      25
+Fails (rate):    25 (100.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Bruce killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The pocketknife killed her.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Joseph killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The pliers killed her.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Frank killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The chainsaw killed her.
+
+----
+
+
+
+
+NER (C)
+
+Test 6
+Test cases:      426
+Fails (rate):    21 (4.9%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-MNR', 'I-ARGM-MNR', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Tulsa on Wednesday.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'I-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Thailand on Saturday.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARG2', 'I-ARG2', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Tulsa on Monday.
+----
+
+
+
+
+Word Order (R)
+
+Test 14
+Test cases:      200
+Fails (rate):    200 (100.0%)
+
+Example fails:
+['O', 'B-ARG1', 'I-ARG1', 'B-V', 'O'] They the reason create.
+----
+No_prediction They the district embitter.
+----
+No_prediction They the reality gray.
+----
+
+
+
+
+NER (R)
+
+Test 7
+Test cases:      400
+Fails (rate):    19 (4.8%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her at midnight in Henderson.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-C-ARG1', 'I-C-ARG1', 'O'] He killed her at midnight in Tonga.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her on Saturday in Laredo.
+----
+
+
+Test 8
+Test cases:      400
+Fails (rate):    196 (49.0%)
+
+Example fails:
+['B-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] On Sunday in Georgia, he killed her.
+----
+['B-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] On Thursday in Botswana, he killed her.
+----
+['B-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'I-ARGM-TMP', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] At noon in Chile, he killed her.
+----
+
+
+
+
+Voc+PoS (C)
+
+Test 1a
+Test cases:      3559
+Fails (rate):    2162 (60.7%)
+
+Example fails:
+No_prediction hail
+----
+No_prediction groan
+----
+No_prediction repute
+----
+
+
+Test 1b
+Test cases:      3559
+Fails (rate):    277 (7.8%)
+
+Example fails:
+No_prediction to group
+----
+No_prediction to quarter
+----
+No_prediction to weary
+----
+
+
+Test 2
+Test cases:      100
+Fails (rate):    0 (0.0%)
+
+
+Test 3
+Test cases:      100
+Fails (rate):    4 (4.0%)
+
+Example fails:
+No_prediction They sweet-talk it.
+----
+['B-ARG0', 'B-V', 'B-ARG2', 'O'] They spook it.
+----
+['B-ARG0', 'B-V', 'B-ARG2', 'O'] They term it.
+----
+
+
+Test 4
+Test cases:      100
+Fails (rate):    26 (26.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-DIR', 'I-ARGM-DIR', 'O'] They pass it to Rachel.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-DIR', 'I-ARGM-DIR', 'O'] They pass it to Diane.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-DIR', 'I-ARGM-DIR', 'O'] They peddle it to Elaine.
+----
+
+
+Test 5
+Test cases:      1000
+Fails (rate):    42 (4.2%)
+
+Example fails:
+['B-ARG1', 'B-V'] Emily roof
+----
+['B-V', 'B-ARG1'] sympathy Anne
+----
+['B-V', 'B-ARG1'] luck luck
+----
+
+
+
+

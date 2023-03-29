@@ -551,10 +551,11 @@ with open('test_runs.txt', 'a') as outfile:
     outfile.write(str(run) + '\n')
 
 # Run test suite_srl
+print('Testing srl model.')
 suite_srl.run(wrapped_model_srl, verbose=True)
 suite_srl.summary()
 
-with open(f'suite_summary_srl_{run}', 'w') as outfile:
+with open(f'suite_summary_srl_{run}.txt', 'w') as outfile:
     sys.stdout = outfile
     suite_srl.summary()
     sys.stdout = sys.__stdout__
@@ -564,10 +565,11 @@ for test in [test_1a, test_1b, test_2, test_3, test_4, test_5, test_6, test_7, t
     write_dataset_and_predictions_to_json(test, 'model_srl', run)
 
 # Run test suite_bert_srl
+print('Testing bert srl model.')
 suite_bert_srl.run(wrapped_model_bert_srl, verbose=True, overwrite=True)
 suite_bert_srl.summary()
 
-with open(f'suite_summary_bert_srl_{run}', 'w') as outfile:
+with open(f'suite_summary_bert_srl_{run}.txt', 'w') as outfile:
     sys.stdout = outfile
     suite_bert_srl.summary()
     sys.stdout = sys.__stdout__
