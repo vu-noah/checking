@@ -4,7 +4,7 @@ This repository contains code for creating challenge datasets to test AllenNLP S
 
 Directories:
 - /bert_srl: a directory containing the challenge dataset(s) and predictions by the structured-prediction-bert-srl model
-- /lexical_resources: files containing different content which is used to build the challenge dataset(s)
+- /lexical_resources: files containing different content which is used to build the challenge dataset(s), as well as code for obtaining said content
 - /srl: a directory containing the challenge dataset(s) and predictions by the structured-prediction-srl model
 
 Within /bert_srl and /srl:
