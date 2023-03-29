@@ -22,7 +22,9 @@ Execution of the code:
 
 The script will proceed to build samples for each proposed test. Some of the samples involve a random selection of words 
 or perturbations, which is why portions of the challenge datasets differ from their corresponding portions in other runs.
-For assessing the overall performance, you can take the average of the
+Since for some of these cases, if I had generated all possible samples by taking the product of all random variables, the dataset would have
+become exponentially larger, I had to restrict myself to a set sample size.
+The overall performance can thus be approximated by taking the average of the
 failure rate over several runs.
 Once the samples are created, the script then carries out a number of different tests for evaluating the behavior of the SRL models,
 prints the results to the console and saves them to file.
