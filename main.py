@@ -130,19 +130,19 @@ suite_bert_srl = TestSuite()
 # Tools taken from: https://preply.com/en/blog/names-of-tools-in-english/ and https://7esl.com/tools-vocabulary/
 # Ambiguous names taken from: https://www.madeformums.com/pregnancy/place-name-baby-names/; sample
 
-with open('unambiguous_nouns.json') as infile:
+with open('lexical_resources/unambiguous_nouns.json') as infile:
     nouns = json.load(infile)
 
-with open('unambiguous_adjectives.json') as infile:
+with open('lexical_resources/unambiguous_adjectives.json') as infile:
     adjectives = json.load(infile)
 
-with open('transitive_verbs.json') as infile:
+with open('lexical_resources/transitive_verbs.json') as infile:
     transitive_verbs = json.load(infile)
 
-with open('ditransitive_verbs.json') as infile:
+with open('lexical_resources/ditransitive_verbs.json') as infile:
     ditransitive_verbs = json.load(infile)
 
-with open('causative_inchoative_verbs.json') as infile:
+with open('lexical_resources/causative_inchoative_verbs.json') as infile:
     causative_inchoative_verbs = json.load(infile)
 
 
@@ -187,12 +187,10 @@ countries = [c for c
 
 # Test 1a ##############################################################################################################
 all_verb_lemmas = vn.lemmas()
-infinitives = [l
-               for l
+
+infinitives = [l for l
                in all_verb_lemmas
-               if re.match(r'^[a-z]+$',  # I do not want lemmas with underscores
-                           l)
-               ]
+               if re.match(r'^[a-z]+$', l)]  # I do not want lemmas with underscores
 
 samples_t1a = infinitives
 
@@ -202,7 +200,7 @@ test_1a = MFT(data=samples_t1a,
               name='Test 1a',
               capability='Voc+PoS (C)',
               description='Recognize predicates.',
-              templates='{verb}'
+              templates='{verb}',
               )
 
 suite_srl.add(test_1a)
@@ -212,18 +210,18 @@ suite_bert_srl.add(test_1a)
 infinitives = ['to ' + l
                for l
                in all_verb_lemmas
-               if re.match(r'^[a-z]+$',
-                           l)
-               ]
+               if re.match(r'^[a-z]+$', l)]
+
 samples_t1b = infinitives
 
 test_1b = MFT(data=samples_t1b,
               labels=[str(['O', 'B-V'])
-                      for _ in range(len(samples_t1b))],
+                      for _
+                      in range(len(samples_t1b))],
               name='Test 1b',
               capability='Voc+PoS (C)',
               description='Recognize predicates.',
-              templates='to {verb}'
+              templates='to {verb}',
               )
 
 suite_srl.add(test_1b)
@@ -239,7 +237,7 @@ test_2 = MFT(data=samples_t2.data,
              name='Test 2',
              capability='Voc+PoS (C)',
              description='Recognize noun phrases as participants.',
-             templates=template_t2
+             templates=template_t2,
              )
 
 suite_srl.add(test_2)
@@ -258,7 +256,7 @@ test_3 = MFT(data=samples_t3.data,
              name='Test 3',
              capability='Voc+PoS (C)',
              description='Recognize transitive predicates.',
-             templates=template_t3
+             templates=template_t3,
              )
 
 suite_srl.add(test_3)
@@ -280,7 +278,7 @@ test_4 = MFT(data=samples_t4.data,
              name='Test 4',
              capability='Voc+PoS (C)',
              description='Recognize ditransitive predicates.',
-             templates=[template_t4_1, template_t4_2]
+             templates=[template_t4_1, template_t4_2],
              )
 
 suite_srl.add(test_4)
@@ -312,7 +310,7 @@ test_5 = MFT(data=samples_t5.data,
              capability='Voc+PoS (C)',
              description='Label roles only when predicate exists.',
              templates=[template_t5_1, template_t5_2, template_t5_3, template_t5_4, template_t5_5, template_t5_6,
-                        template_t5_7, template_t5_8, template_t5_9, template_t5_10]
+                        template_t5_7, template_t5_8, template_t5_9, template_t5_10],
              )
 
 suite_srl.add(test_5)
@@ -344,7 +342,7 @@ test_6 = MFT(data=samples_t6.data,
              name='Test 6',
              capability='NER (C)',
              description='Recognize locations & temporal expressions.',
-             templates=[template_t6_1, template_t6_2, template_t6_3, template_t6_4, template_t6_5]
+             templates=[template_t6_1, template_t6_2, template_t6_3, template_t6_4, template_t6_5],
              )
 
 suite_srl.add(test_6)
@@ -372,7 +370,7 @@ test_7 = MFT(data=samples_t7.data,
              name='Test 7',
              capability='NER (R)',
              description='Label LOC & TMP correctly if in wrong order.',
-             templates=[template_t7_1, template_t7_2, template_t7_3, template_t7_4]
+             templates=[template_t7_1, template_t7_2, template_t7_3, template_t7_4],
              )
 
 suite_srl.add(test_7)
@@ -400,7 +398,7 @@ test_8 = MFT(data=samples_t8.data,
              name='Test 8',
              capability='NER (R)',
              description='Label LOC & TMP correctly if at the beginning of the sentence.',
-             templates=[template_t8_1, template_t8_2, template_t8_3, template_t8_4]
+             templates=[template_t8_1, template_t8_2, template_t8_3, template_t8_4],
              )
 
 suite_srl.add(test_8)
@@ -448,8 +446,7 @@ test_9 = DIR(data=animate_inanimate_data,
              templates=[template_t9_animate, template_t9_inanimate],
              labels=[[l1, l2]
                      for l1, l2
-                     in zip(samples_t9_animate.labels, samples_t9_inanimate.labels)
-                     ]
+                     in zip(samples_t9_animate.labels, samples_t9_inanimate.labels)],
              )
 
 suite_srl.add(test_9)
@@ -501,8 +498,7 @@ test_11 = DIR(active_passive_data,
               templates=[template_t11_active, template_t11_passive],
               labels=[[expectation_t11_1, expectation_t11_2]
                       for _
-                      in range(100)
-                      ]
+                      in range(100)],
               )
 
 suite_srl.add(test_11)
@@ -554,8 +550,7 @@ test_12 = DIR(PP_dative_data,
               description='Handle alternation of dative-like construction and PP properly.',
               templates=[template_t12_PP, template_t12_dative],
               labels=[[expectation_t12_1, expectation_t12_2]
-                      for _ in range(8)
-                      ]
+                      for _ in range(8)],
               )
 
 suite_srl.add(test_12)
@@ -607,8 +602,7 @@ test_13 = DIR(causative_inchoative_data,
               description='Handle causative-inchoative alternation correctly.',
               templates=[template_t13_causative, template_t13_inchoative],
               labels=[[expectation_t13_1, expectation_t13_2]
-                      for _ in range(13)
-                      ]
+                      for _ in range(13)],
               )
 
 suite_srl.add(test_13)
@@ -626,7 +620,7 @@ test_14 = MFT(data=samples_t14.data,
               name='Test 14',
               capability='Word Order (R)',
               description='Resolve SRL even when word order is incorrect.',
-              templates=template_t14
+              templates=template_t14,
               )
 
 suite_srl.add(test_14)
@@ -664,7 +658,7 @@ test_17 = MFT(data=samples_t17.data,
               name='Test 17',
               capability='Ambiguity (C)',
               description='Handle ambiguity based on semantic criteria (of the predicate).',
-              templates=template_t17
+              templates=template_t17,
               )
 
 suite_srl.add(test_17)

@@ -1,0 +1,210 @@
+NER (R)
+
+Test 7
+Test cases:      400
+Fails (rate):    1 (0.2%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O'] He killed her on Friday in Garland.
+----
+
+
+Test 8
+Test cases:      400
+Fails (rate):    10 (2.5%)
+
+Example fails:
+['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] On Friday in Wichita, he killed her.
+----
+['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] At noon in Garland, he killed her.
+----
+['B-ARGM-TMP', 'I-ARGM-TMP', 'B-ARGM-MNR', 'I-ARGM-MNR', 'O', 'B-ARG0', 'B-V', 'B-ARG1', 'O'] On Sunday in Garland, he killed her.
+----
+
+
+
+
+Word Order (R)
+
+Test 14
+Test cases:      200
+Fails (rate):    196 (98.0%)
+
+Example fails:
+No_prediction They the age embitter.
+----
+No_prediction They the fun steer.
+----
+['B-ARG0', 'I-ARG0', 'I-ARG0', 'B-V', 'O'] They the band exasperate.
+----
+
+
+
+
+Robustness (R)
+
+Test 16
+Test cases:      200
+Fails (rate):    73 (36.5%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARG2', 'I-ARG2', 'O'] They volunteer it to Caroline.
+['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'I-ARG1', 'O'] They volunteer it ot Caroline.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARG2', 'I-ARG2', 'O'] They refund it to Al.
+['B-ARG0', 'B-V', 'B-ARG1', 'O', 'O', 'O'] They refun dit to Al.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] They deafen it.
+['B-ARG0', 'O', 'B-V', 'B-ARG1', 'O'] Theyd eafen it.
+
+----
+
+
+
+
+Voc+PoS (C)
+
+Test 1a
+Test cases:      3559
+Fails (rate):    2162 (60.7%)
+
+Example fails:
+No_prediction mew
+----
+No_prediction apprentice
+----
+No_prediction alternate
+----
+
+
+Test 1b
+Test cases:      3559
+Fails (rate):    279 (7.8%)
+
+Example fails:
+No_prediction to outsmart
+----
+No_prediction to drool
+----
+No_prediction to credit
+----
+
+
+Test 2
+Test cases:      100
+Fails (rate):    0 (0.0%)
+
+
+Test 3
+Test cases:      100
+Fails (rate):    3 (3.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG2', 'O'] They gouge it.
+----
+No_prediction They sweet-talk it.
+----
+['B-ARG0', 'B-V', 'B-ARG2', 'O'] They order it.
+----
+
+
+Test 4
+Test cases:      100
+Fails (rate):    1 (1.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-PRP', 'I-ARGM-PRP', 'O'] They lend it to Sue.
+----
+
+
+Test 5
+Test cases:      1000
+Fails (rate):    49 (4.9%)
+
+Example fails:
+['B-V', 'B-ARG1'] roof Jim
+----
+['B-V', 'B-ARG1'] calendar Pamela
+----
+['B-V', 'B-ARG1'] witness witness
+----
+
+
+
+
+NER (C)
+
+Test 6
+Test cases:      426
+Fails (rate):    4 (0.9%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-MNR', 'I-ARGM-MNR', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Garland on Friday.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-MNR', 'I-ARGM-MNR', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Garland at midnight.
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'B-ARGM-MNR', 'I-ARGM-MNR', 'B-ARGM-TMP', 'I-ARGM-TMP', 'O'] He killed her in Garland at noon.
+----
+
+
+
+
+Semantics (C)
+
+Test 9
+Test cases:      25
+Fails (rate):    24 (96.0%)
+
+Example fails:
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Peter killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The backsaw killed her.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Ron killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The brace killed her.
+
+----
+['B-ARG0', 'B-V', 'B-ARG1', 'O'] Steven killed her.
+['B-ARG0', 'I-ARG0', 'B-V', 'B-ARG1', 'O'] The axe killed her.
+
+----
+
+
+
+
+Ambiguity (C)
+
+Test 17
+Test cases:      46
+Fails (rate):    0 (0.0%)
+
+
+
+
+Alternation (C)
+
+Test 11
+Test cases:      100
+Fails (rate):    0 (0.0%)
+
+
+Test 12
+Test cases:      8
+Fails (rate):    0 (0.0%)
+
+
+Test 13
+Test cases:      13
+Fails (rate):    1 (7.7%)
+
+Example fails:
+['B-ARG0', 'B-ARGM-MOD', 'B-V', 'B-ARG1', 'I-ARG1', 'O'] He will chip the window.
+['B-ARG0', 'I-ARG0', 'B-ARGM-MOD', 'B-V', 'O'] The window will chip.
+
+----
+
+
+
+
