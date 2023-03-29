@@ -29,7 +29,10 @@ def get_predictions_srl(sentences):
         all_prediction_info = model_srl.predict(sentence)
         if all_prediction_info['verbs']:
             if len(all_prediction_info['verbs']) > 1:
-                prediction_list = ['O' for _ in range(len(all_prediction_info['verbs'][0]['tags']))]
+                prediction_list = ['O'
+                                   for _
+                                   in range(len(all_prediction_info['verbs'][0]['tags']))
+                                   ]
                 for verb in all_prediction_info['verbs']:
                     for i, prediction in enumerate(verb['tags']):
                         if prediction != 'O':
@@ -55,7 +58,10 @@ def get_predictions_bert_srl(sentences):
         all_prediction_info = model_bert_srl.predict(sentence)
         if all_prediction_info['verbs']:
             if len(all_prediction_info['verbs']) > 1:
-                prediction_list = ['O' for _ in range(len(all_prediction_info['verbs'][0]['tags']))]
+                prediction_list = ['O'
+                                   for _
+                                   in range(len(all_prediction_info['verbs'][0]['tags']))
+                                   ]
                 for verb in all_prediction_info['verbs']:
                     for i, prediction in enumerate(verb['tags']):
                         if prediction != 'O':
@@ -79,16 +85,26 @@ def write_dataset_and_predictions_to_json(test, model, run):
     :return: None
     """
     if type(test.results['preds'][0]) == numpy.ndarray:  # for DIR and INV
-        dataset = {'test_name': test.name, 'capability': test.capability, 'description': test.description,
-                   'templates': test.templates, 'data': test.data,
-                   'data, expectation, prediction': [tup for tup in zip(test.data, test.labels,
-                                                                        [array.tolist() for array in
-                                                                         test.results['preds']])]}
+        dataset = {'test_name': test.name,
+                   'capability': test.capability,
+                   'description': test.description,
+                   'templates': test.templates,
+                   'data': test.data,
+                   'data, expectation, prediction': [tup for tup
+                                                     in zip(test.data, test.labels, [array.tolist()
+                                                                                     for array
+                                                                                     in test.results['preds']
+                                                                                     ])]
+                   }
     else:  # for MFT
-        dataset = {'test_name': test.name, 'capability': test.capability, 'description': test.description,
-                   'templates': test.templates, 'data': test.data,
-                   'data, expectation, prediction': [tup for tup in zip(test.data, test.labels,
-                                                                         test.results['preds'])]}
+        dataset = {'test_name': test.name,
+                   'capability': test.capability,
+                   'description': test.description,
+                   'templates': test.templates,
+                   'data': test.data,
+                   'data, expectation, prediction': [tup for tup
+                                                     in zip(test.data, test.labels, test.results['preds'])]
+                   }
 
     if model == 'model_srl':
         with open(f'dataset_and_predictions_srl_{run}.json', 'a') as outfile:
@@ -105,6 +121,7 @@ editor = Editor()
 # Instantiate test suites to store the created tests
 suite_srl = TestSuite()
 suite_bert_srl = TestSuite()
+
 
 # Load adjectives and nouns to use with editor
 # Adjectives taken from: https://gist.github.com/hugsy/8910dc78d208e40de42deb29e62df913; random sample
@@ -128,43 +145,86 @@ with open('ditransitive_verbs.json') as infile:
 with open('causative_inchoative_verbs.json') as infile:
     causative_inchoative_verbs = json.load(infile)
 
+
 weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
 times = ['midnight', 'noon']
+
 tools = ['screw', 'nut', 'handsaw', 'bradawl', 'bolt', 'hammer', 'screwdriver', 'mallet', 'axe', 'saw', 'scissors',
          'chisel', 'pliers', 'drill', 'nail', 'wrench', 'backsaw', 'hacksaw', 'pocketknife', 'chainsaw', 'stone',
          'brace', 'corkscrew', 'plunger', 'stepladder']
+
 ambiguous_names = ['Adelaide', 'Arizona', 'Asia', 'Austin', 'Avalon', 'Boston', 'Bristol', 'Brooklyn', 'Camden',
                    'Carolina', 'Charlotte', 'Chelsea', 'Chester', 'Dakota', 'Dallas', 'Denver', 'Devon', 'Florence',
                    'Holland', 'India', 'Ireland', 'Italia', 'Jackson', 'Jordan', 'Kent', 'Kenya', 'Kingston', 'Lille',
                    'Milan', 'Odessa', 'Orlando', 'Paris', 'Phoenix', 'Raleigh', 'Regina', 'Rhodes', 'Rio', 'Rochelle',
                    'Rome', 'Sahara', 'Savannah', 'Siena', 'Sorrento', 'Sydney', 'Valencia', 'Vienna']
 
-clocktimes = ['three o\'clock', 'six o\'clock', 'nine o\'clock', 'twelve o\'clock'] + \
-             [str(i) + 'pm' for i in range(1, 12)] + [str(i) + 'am' for i in range(1, 12)]
 
-male_names = [n for n in editor.lexicons['male']]
-female_names = [n for n in editor.lexicons['female']]
-cities = [c for c in editor.lexicons['city'] if all([' ' not in c, '-' not in c])]
-countries = [c for c in editor.lexicons['country'] if all([' ' not in c, '-' not in c])]
+clocktimes = ['three o\'clock', 'six o\'clock', 'nine o\'clock', 'twelve o\'clock'] + \
+             [str(i) + 'pm'
+              for i
+              in range(1, 12)
+              ] + [str(i) + 'am'
+                   for i
+                   in range(1, 12)
+                   ]
+
+
+male_names = [n for n
+              in editor.lexicons['male']]
+female_names = [n for n
+                in editor.lexicons['female']]
+cities = [c for c
+          in editor.lexicons['city']
+          if all([' ' not in c,
+                  '-' not in c])]
+countries = [c for c
+             in editor.lexicons['country']
+             if all([' ' not in c,
+                     '-' not in c])]
+
 
 # Test 1a ##############################################################################################################
 all_verb_lemmas = vn.lemmas()
-infinitives = [l for l in all_verb_lemmas if re.match(r'^[a-z]+$', l)]  # I do not want lemmas with underscores
+infinitives = [l
+               for l
+               in all_verb_lemmas
+               if re.match(r'^[a-z]+$',  # I do not want lemmas with underscores
+                           l)
+               ]
 
 samples_t1a = infinitives
 
-test_1a = MFT(data=samples_t1a, labels=[str(['B-V']) for _ in range(len(samples_t1a))], name='Test 1a',
-              capability='Voc+PoS (C)', description='Recognize predicates.', templates='{verb}')
+test_1a = MFT(data=samples_t1a,
+              labels=[str(['B-V'])
+                      for _ in range(len(samples_t1a))],
+              name='Test 1a',
+              capability='Voc+PoS (C)',
+              description='Recognize predicates.',
+              templates='{verb}'
+              )
 
 suite_srl.add(test_1a)
 suite_bert_srl.add(test_1a)
 
 # Test 1b ##############################################################################################################
-infinitives = ['to ' + l for l in all_verb_lemmas if re.match(r'^[a-z]+$', l)]
+infinitives = ['to ' + l
+               for l
+               in all_verb_lemmas
+               if re.match(r'^[a-z]+$',
+                           l)
+               ]
 samples_t1b = infinitives
 
-test_1b = MFT(data=samples_t1b, labels=[str(['O', 'B-V']) for _ in range(len(samples_t1b))], name='Test 1b',
-              capability='Voc+PoS (C)', description='Recognize predicates.', templates='to {verb}')
+test_1b = MFT(data=samples_t1b,
+              labels=[str(['O', 'B-V'])
+                      for _ in range(len(samples_t1b))],
+              name='Test 1b',
+              capability='Voc+PoS (C)',
+              description='Recognize predicates.',
+              templates='to {verb}'
+              )
 
 suite_srl.add(test_1b)
 suite_bert_srl.add(test_1b)
@@ -174,8 +234,13 @@ template_t2 = 'The {noun} exists.'
 samples_t2 = editor.template(template_t2, noun=list(nouns), product=True, remove_duplicates=True,
                              labels=str(['B-ARG1', 'I-ARG1', 'B-V', 'O']))
 
-test_2 = MFT(data=samples_t2.data, labels=samples_t2.labels, name='Test 2', capability='Voc+PoS (C)',
-             description='Recognize noun phrases as participants.', templates=template_t2)
+test_2 = MFT(data=samples_t2.data,
+             labels=samples_t2.labels,
+             name='Test 2',
+             capability='Voc+PoS (C)',
+             description='Recognize noun phrases as participants.',
+             templates=template_t2
+             )
 
 suite_srl.add(test_2)
 suite_bert_srl.add(test_2)
@@ -188,8 +253,13 @@ expectation_t3 = str(['B-ARG0', 'B-V', 'B-ARG1', 'O'])
 samples_t3 = editor.template(template_t3, transitive_verb=transitive_verbs, product=True, remove_duplicates=True,
                              labels=expectation_t3)
 
-test_3 = MFT(data=samples_t3.data, labels=samples_t3.labels, name='Test 3', capability='Voc+PoS (C)',
-             description='Recognize transitive predicates.', templates=template_t3)
+test_3 = MFT(data=samples_t3.data,
+             labels=samples_t3.labels,
+             name='Test 3',
+             capability='Voc+PoS (C)',
+             description='Recognize transitive predicates.',
+             templates=template_t3
+             )
 
 suite_srl.add(test_3)
 suite_bert_srl.add(test_3)
@@ -205,8 +275,13 @@ samples_t4 = editor.template(template_t4_1, ditransitive_verb=ditransitive_verbs
 samples_t4 += editor.template(template_t4_2, ditransitive_verb=ditransitive_verbs, nsamples=50, remove_duplicates=True,
                               labels=expectation_t4)
 
-test_4 = MFT(data=samples_t4.data, labels=samples_t4.labels, name='Test 4', capability='Voc+PoS (C)',
-             description='Recognize ditransitive predicates.', templates=[template_t4_1, template_t4_2])
+test_4 = MFT(data=samples_t4.data,
+             labels=samples_t4.labels,
+             name='Test 4',
+             capability='Voc+PoS (C)',
+             description='Recognize ditransitive predicates.',
+             templates=[template_t4_1, template_t4_2]
+             )
 
 suite_srl.add(test_4)
 suite_bert_srl.add(test_4)
@@ -231,10 +306,14 @@ for template in [template_t5_4, template_t5_5, template_t5_6, template_t5_7, tem
                  template_t5_10]:
     samples_t5 += editor.template(template, noun=nouns, nsamples=100, remove_duplicates=True, labels='No_prediction')
 
-test_5 = MFT(data=samples_t5.data, labels=samples_t5.labels, name='Test 5', capability='Voc+PoS (C)',
+test_5 = MFT(data=samples_t5.data,
+             labels=samples_t5.labels,
+             name='Test 5',
+             capability='Voc+PoS (C)',
              description='Label roles only when predicate exists.',
              templates=[template_t5_1, template_t5_2, template_t5_3, template_t5_4, template_t5_5, template_t5_6,
-                        template_t5_7, template_t5_8, template_t5_9, template_t5_10])
+                        template_t5_7, template_t5_8, template_t5_9, template_t5_10]
+             )
 
 suite_srl.add(test_5)
 suite_bert_srl.add(test_5)
@@ -260,9 +339,13 @@ samples_t6 += editor.template(template_t6_4, time=times, country=countries, nsam
 samples_t6 += editor.template(template_t6_5, clocktime=clocktimes, product=True, remove_duplicates=True,
                               labels=expectation_t6_2)
 
-test_6 = MFT(data=samples_t6.data, labels=samples_t6.labels, name='Test 6', capability='NER (C)',
+test_6 = MFT(data=samples_t6.data,
+             labels=samples_t6.labels,
+             name='Test 6',
+             capability='NER (C)',
              description='Recognize locations & temporal expressions.',
-             templates=[template_t6_1, template_t6_2, template_t6_3, template_t6_4, template_t6_5])
+             templates=[template_t6_1, template_t6_2, template_t6_3, template_t6_4, template_t6_5]
+             )
 
 suite_srl.add(test_6)
 suite_bert_srl.add(test_6)
@@ -284,9 +367,13 @@ samples_t7 += editor.template(template_t7_3, time=times, city=cities, nsamples=1
 samples_t7 += editor.template(template_t7_4, time=times, country=countries, nsamples=100, remove_duplicates=True,
                               labels=expectation_t7)
 
-test_7 = MFT(data=samples_t7.data, labels=samples_t7.labels, name='Test 7', capability='NER (R)',
+test_7 = MFT(data=samples_t7.data,
+             labels=samples_t7.labels,
+             name='Test 7',
+             capability='NER (R)',
              description='Label LOC & TMP correctly if in wrong order.',
-             templates=[template_t7_1, template_t7_2, template_t7_3, template_t7_4])
+             templates=[template_t7_1, template_t7_2, template_t7_3, template_t7_4]
+             )
 
 suite_srl.add(test_7)
 suite_bert_srl.add(test_7)
@@ -308,9 +395,13 @@ samples_t8 += editor.template(template_t8_3, time=times, city=cities, nsamples=1
 samples_t8 += editor.template(template_t8_4, time=times, country=countries, nsamples=100, remove_duplicates=True,
                               labels=expectation_t8)
 
-test_8 = MFT(data=samples_t8.data, labels=samples_t8.labels, name='Test 8', capability='NER (R)',
+test_8 = MFT(data=samples_t8.data,
+             labels=samples_t8.labels,
+             name='Test 8',
+             capability='NER (R)',
              description='Label LOC & TMP correctly if at the beginning of the sentence.',
-             templates=[template_t8_1, template_t8_2, template_t8_3, template_t8_4])
+             templates=[template_t8_1, template_t8_2, template_t8_3, template_t8_4]
+             )
 
 suite_srl.add(test_8)
 suite_bert_srl.add(test_8)
@@ -324,8 +415,9 @@ samples_t9_animate = editor.template(template_t9_animate, nsamples=25, remove_du
 samples_t9_inanimate = editor.template(template_t9_inanimate, tool=tools, product=True, remove_duplicates=True,
                                        labels=str(['B-ARG2', 'I-ARG2', 'B-V', 'B-ARG1', 'O']))
 
-animate_inanimate_data = [[animate, inanimate] for animate, inanimate in zip(samples_t9_animate.data,
-                                                                             samples_t9_inanimate.data)]
+animate_inanimate_data = [[animate, inanimate]
+                          for animate, inanimate
+                          in zip(samples_t9_animate.data, samples_t9_inanimate.data)]
 
 
 def different_SRs_for_inanimate(orig_pred, pred, orig_conf, conf, labels=None, meta=None):
@@ -346,12 +438,19 @@ def different_SRs_for_inanimate(orig_pred, pred, orig_conf, conf, labels=None, m
         return False
 
 
-expect_fn_animate_inanimate = Expect.pairwise(different_SRs_for_inanimate)
+expect_function_animate_inanimate = Expect.pairwise(different_SRs_for_inanimate)
 
-test_9 = DIR(animate_inanimate_data, expect=expect_fn_animate_inanimate, name='Test 9', capability='Semantics (C)',
+test_9 = DIR(data=animate_inanimate_data,
+             expect=expect_function_animate_inanimate,
+             name='Test 9',
+             capability='Semantics (C)',
              description='Distinguish animate and volitional from inanimate and non-volitional participants.',
              templates=[template_t9_animate, template_t9_inanimate],
-             labels=[[l1, l2] for l1, l2 in zip(samples_t9_animate.labels, samples_t9_inanimate.labels)])
+             labels=[[l1, l2]
+                     for l1, l2
+                     in zip(samples_t9_animate.labels, samples_t9_inanimate.labels)
+                     ]
+             )
 
 suite_srl.add(test_9)
 suite_bert_srl.add(test_9)
@@ -370,7 +469,9 @@ for male_name, female_name in zip(male_names, female_names):
     active_sentences.append(f'{male_name} killed {female_name}.')
     passive_sentences.append(f'{female_name} was killed by {male_name}.')
 
-active_passive_data = [[active, passive] for active, passive in zip(active_sentences, passive_sentences)]
+active_passive_data = [[active, passive]
+                       for active, passive
+                       in zip(active_sentences, passive_sentences)]
 
 
 def active_passive_shift(orig_pred, pred, orig_conf, conf, labels=None, meta=None):
@@ -384,17 +485,25 @@ def active_passive_shift(orig_pred, pred, orig_conf, conf, labels=None, meta=Non
     :param meta: /
     :return: bool: whether the labels for both sentences were predicted correctly
     """
-    if all([str(orig_pred.tolist()) == expectation_t11_1, str(pred.tolist()) == expectation_t11_2]):
+    if all([str(orig_pred.tolist()) == expectation_t11_1,
+            str(pred.tolist()) == expectation_t11_2]):
         return True
     else:
         return False
 
-expect_fn_active_passive = Expect.pairwise(active_passive_shift)
+expect_function_active_passive = Expect.pairwise(active_passive_shift)
 
-test_11 = DIR(active_passive_data, expect=expect_fn_active_passive, name='Test 11', capability='Alternation (C)',
+test_11 = DIR(active_passive_data,
+              expect=expect_function_active_passive,
+              name='Test 11',
+              capability='Alternation (C)',
               description='Handle active-passive alternation correctly.',
               templates=[template_t11_active, template_t11_passive],
-              labels=[[expectation_t11_1, expectation_t11_2] for _ in range(100)])
+              labels=[[expectation_t11_1, expectation_t11_2]
+                      for _
+                      in range(100)
+                      ]
+              )
 
 suite_srl.add(test_11)
 suite_bert_srl.add(test_11)
@@ -413,7 +522,9 @@ for ditransitive_verb in ditransitive_verbs:
     PP_sentences.append(f'They {ditransitive_verb} the money to her.')
     dative_sentences.append(f'They {ditransitive_verb} her the money.')
 
-PP_dative_data = [[PP, dative] for PP, dative in zip(PP_sentences, dative_sentences)]
+PP_dative_data = [[PP, dative]
+                  for PP, dative
+                  in zip(PP_sentences, dative_sentences)]
 
 
 def PP_dative_shift(orig_pred, pred, orig_conf, conf, labels=None, meta=None):
@@ -427,18 +538,25 @@ def PP_dative_shift(orig_pred, pred, orig_conf, conf, labels=None, meta=None):
     :param meta: /
     :return: bool: whether the labels for both sentences were predicted correctly
     """
-    if all([str(orig_pred.tolist()) == expectation_t12_1, str(pred.tolist()) == expectation_t12_2]):
+    if all([str(orig_pred.tolist()) == expectation_t12_1,
+            str(pred.tolist()) == expectation_t12_2]):
         return True
     else:
         return False
 
 
-expect_fn_PP_dative = Expect.pairwise(PP_dative_shift)
+expect_function_PP_dative = Expect.pairwise(PP_dative_shift)
 
-test_12 = DIR(PP_dative_data, expect=expect_fn_PP_dative, name='Test 12', capability='Alternation (C)',
+test_12 = DIR(PP_dative_data,
+              expect=expect_function_PP_dative,
+              name='Test 12',
+              capability='Alternation (C)',
               description='Handle alternation of dative-like construction and PP properly.',
               templates=[template_t12_PP, template_t12_dative],
-              labels=[[expectation_t12_1, expectation_t12_2] for _ in range(8)])
+              labels=[[expectation_t12_1, expectation_t12_2]
+                      for _ in range(8)
+                      ]
+              )
 
 suite_srl.add(test_12)
 suite_bert_srl.add(test_12)
@@ -457,8 +575,9 @@ for causative_inchoative_verb in causative_inchoative_verbs:
     causative_sentences.append(f'He will {causative_inchoative_verb} the window.')
     inchoative_sentences.append(f'The window will {causative_inchoative_verb}.')
 
-causative_inchoative_data = [[causative, inchoative] for causative, inchoative in zip(causative_sentences,
-                                                                                      inchoative_sentences)]
+causative_inchoative_data = [[causative, inchoative]
+                             for causative, inchoative
+                             in zip(causative_sentences, inchoative_sentences)]
 
 
 def causative_inchoative_shift(orig_pred, pred, orig_conf, conf, labels=None, meta=None):
@@ -472,19 +591,25 @@ def causative_inchoative_shift(orig_pred, pred, orig_conf, conf, labels=None, me
     :param meta: /
     :return: bool: whether the labels for both sentences were predicted correctly
     """
-    if all([str(orig_pred.tolist()) == expectation_t13_1, str(pred.tolist()) == expectation_t13_2]):
+    if all([str(orig_pred.tolist()) == expectation_t13_1,
+            str(pred.tolist()) == expectation_t13_2]):
         return True
     else:
         return False
 
 
-expect_fn_causative_inchoative = Expect.pairwise(causative_inchoative_shift)
+expect_function_causative_inchoative = Expect.pairwise(causative_inchoative_shift)
 
-test_13 = DIR(causative_inchoative_data, expect=expect_fn_causative_inchoative, name='Test 13',
+test_13 = DIR(causative_inchoative_data,
+              expect=expect_function_causative_inchoative,
+              name='Test 13',
               capability='Alternation (C)',
               description='Handle causative-inchoative alternation correctly.',
               templates=[template_t13_causative, template_t13_inchoative],
-              labels=[[expectation_t13_1, expectation_t13_2] for _ in range(13)])
+              labels=[[expectation_t13_1, expectation_t13_2]
+                      for _ in range(13)
+                      ]
+              )
 
 suite_srl.add(test_13)
 suite_bert_srl.add(test_13)
@@ -496,8 +621,13 @@ samples_t14 = editor.template(templates=template_t14, transitive_verb=transitive
                               labels=str(['B-ARG0', 'B-ARG1', 'I-ARG1', 'B-V', 'O']),
                               nsamples=200, remove_duplicates=True)
 
-test_14 = MFT(data=samples_t14.data, labels=samples_t14.labels, name='Test 14', capability='Word Order (R)',
-              description='Resolve SRL even when word order is incorrect.', templates=template_t14)
+test_14 = MFT(data=samples_t14.data,
+              labels=samples_t14.labels,
+              name='Test 14',
+              capability='Word Order (R)',
+              description='Resolve SRL even when word order is incorrect.',
+              templates=template_t14
+              )
 
 suite_srl.add(test_14)
 suite_bert_srl.add(test_14)
@@ -507,11 +637,17 @@ samples_t16 = samples_t3 + samples_t4
 
 typo_sentences = Perturb.perturb(samples_t16.data, Perturb.add_typos)
 
-test_16 = INV(data=typo_sentences.data, name='Test 16', capability='Robustness (R)',
+test_16 = INV(data=typo_sentences.data,
+              name='Test 16',
+              capability='Robustness (R)',
               description='Spelling mistakes should not affect the predictions.',
               templates=[template_t3, template_t4_1, template_t4_2],
-              labels=[[expectation_t3, expectation_t3] for _ in range(100)] +
-                     [[expectation_t4, expectation_t4] for _ in range(100)])
+              labels=[[expectation_t3, expectation_t3]  # labels are not expected to change pairwise
+                      for _ in range(100)]  # first half of samples
+                     +
+                     [[expectation_t4, expectation_t4]
+                      for _ in range(100)]  # second half
+              )
 
 suite_srl.add(test_16)
 suite_bert_srl.add(test_16)
@@ -523,8 +659,13 @@ samples_t17 = editor.template(templates=template_t17, ambiguous_name=ambiguous_n
                               labels=str(['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'O']),
                               product=True, remove_duplicates=True)
 
-test_17 = MFT(data=samples_t17.data, labels=samples_t17.labels, name='Test 17', capability='Ambiguity (C)',
-              description='Handle ambiguity based on semantic criteria (of the predicate).', templates=template_t17)
+test_17 = MFT(data=samples_t17.data,
+              labels=samples_t17.labels,
+              name='Test 17',
+              capability='Ambiguity (C)',
+              description='Handle ambiguity based on semantic criteria (of the predicate).',
+              templates=template_t17
+              )
 
 suite_srl.add(test_17)
 suite_bert_srl.add(test_17)
