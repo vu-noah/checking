@@ -6,6 +6,8 @@
 import re
 import json
 import numpy
+import os
+import sys
 from checklist.editor import Editor
 from checklist.pred_wrapper import PredictorWrapper
 from checklist.test_types import MFT, INV, DIR
@@ -68,11 +70,12 @@ def get_predictions_bert_srl(sentences):
     return all_predictions
 
 
-def write_dataset_and_predictions_to_json(test, model):
+def write_dataset_and_predictions_to_json(test, model, run):
     """
     Extract metadata from tests and write dataset to file.
     :param test: a CheckList test object with results
     :param str model: the model used for predictions
+    :param int run: the number of the test run
     :return: None
     """
     if type(test.results['preds'][0]) == numpy.ndarray:  # for DIR and INV
@@ -88,11 +91,11 @@ def write_dataset_and_predictions_to_json(test, model):
                                                                          test.results['preds'])]}
 
     if model == 'model_srl':
-        with open('dataset_and_predictions_srl.json', 'a') as outfile:
+        with open(f'dataset_and_predictions_srl_{run}.json', 'a') as outfile:
             json.dump(dataset, outfile, indent=4)
             outfile.write('\n')
     elif model == 'model_bert_srl':
-        with open('dataset_and_predictions_bert_srl.json', 'a') as outfile:
+        with open(f'dataset_and_predictions_bert_srl_{run}.json', 'a') as outfile:
             json.dump(dataset, outfile, indent=4)
             outfile.write('\n')
 
@@ -535,18 +538,40 @@ model_bert_srl = pretrained.load_predictor('structured-prediction-srl-bert')
 wrapped_model_srl = PredictorWrapper.wrap_predict(get_predictions_srl)
 wrapped_model_bert_srl = PredictorWrapper.wrap_predict(get_predictions_bert_srl)
 
+# Check which run of the script it is
+if 'test_runs.txt' in os.listdir():
+    with open('test_runs.txt') as infile:
+        for line in infile.readlines():
+            run = int(line.strip())
+        run = run + 1
+else:
+    run = 1
+
+with open('test_runs.txt', 'a') as outfile:
+    outfile.write(str(run) + '\n')
+
 # Run test suite_srl
 suite_srl.run(wrapped_model_srl, verbose=True)
 suite_srl.summary()
 
+with open(f'suite_summary_srl_{run}', 'w') as outfile:
+    sys.stdout = outfile
+    suite_srl.summary()
+    sys.stdout = sys.__stdout__
+
 for test in [test_1a, test_1b, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_9, test_11, test_12,
              test_13, test_14, test_16, test_17]:
-    write_dataset_and_predictions_to_json(test, 'model_srl')
+    write_dataset_and_predictions_to_json(test, 'model_srl', run)
 
 # Run test suite_bert_srl
-suite_bert_srl.run(wrapped_model_bert_srl, verbose=True)
+suite_bert_srl.run(wrapped_model_bert_srl, verbose=True, overwrite=True)
 suite_bert_srl.summary()
+
+with open(f'suite_summary_bert_srl_{run}', 'w') as outfile:
+    sys.stdout = outfile
+    suite_bert_srl.summary()
+    sys.stdout = sys.__stdout__
 
 for test in [test_1a, test_1b, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_9, test_11, test_12,
              test_13, test_14, test_16, test_17]:
-    write_dataset_and_predictions_to_json(test, 'model_bert_srl')
+    write_dataset_and_predictions_to_json(test, 'model_bert_srl', run)
