@@ -124,7 +124,6 @@ suite_bert_srl = TestSuite()
 
 
 # Load adjectives and nouns to use with editor
-# Adjectives taken from: https://gist.github.com/hugsy/8910dc78d208e40de42deb29e62df913; random sample
 # Nouns taken from: https://github.com/edthrn/most-common-english-words; random sample
 # Transitive verbs obtained from VerbNet; random sample
 # Tools taken from: https://preply.com/en/blog/names-of-tools-in-english/ and https://7esl.com/tools-vocabulary/
@@ -132,9 +131,6 @@ suite_bert_srl = TestSuite()
 
 with open('lexical_resources/unambiguous_nouns.json') as infile:
     nouns = json.load(infile)
-
-with open('lexical_resources/unambiguous_adjectives.json') as infile:
-    adjectives = json.load(infile)
 
 with open('lexical_resources/transitive_verbs.json') as infile:
     transitive_verbs = json.load(infile)
@@ -646,23 +642,23 @@ test_16 = INV(data=typo_sentences.data,
 suite_srl.add(test_16)
 suite_bert_srl.add(test_16)
 
-# Test 17 ##############################################################################################################
-template_t17 = '{ambiguous_name} touches the dog.'
+# Test 18 ##############################################################################################################
+template_t18 = '{ambiguous_name} touches the dog.'
 
-samples_t17 = editor.template(templates=template_t17, ambiguous_name=ambiguous_names,
+samples_t18 = editor.template(templates=template_t18, ambiguous_name=ambiguous_names,
                               labels=str(['B-ARG0', 'B-V', 'B-ARG1', 'I-ARG1', 'O']),
                               product=True, remove_duplicates=True)
 
-test_17 = MFT(data=samples_t17.data,
-              labels=samples_t17.labels,
+test_18 = MFT(data=samples_t18.data,
+              labels=samples_t18.labels,
               name='Test 17',
               capability='Ambiguity (C)',
               description='Handle ambiguity based on semantic criteria (of the predicate).',
-              templates=template_t17,
+              templates=template_t18,
               )
 
-suite_srl.add(test_17)
-suite_bert_srl.add(test_17)
+suite_srl.add(test_18)
+suite_bert_srl.add(test_18)
 
 # Run the tests ########################################################################################################
 # Load models
@@ -696,7 +692,7 @@ with open(f'suite_summary_srl_{run}.txt', 'w') as outfile:
     sys.stdout = sys.__stdout__
 
 for test in [test_1a, test_1b, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_9, test_11, test_12,
-             test_13, test_14, test_16, test_17]:
+             test_13, test_14, test_16, test_18]:
     write_dataset_and_predictions_to_json(test, 'model_srl', run)
 
 # Run test suite_bert_srl
@@ -710,5 +706,5 @@ with open(f'suite_summary_bert_srl_{run}.txt', 'w') as outfile:
     sys.stdout = sys.__stdout__
 
 for test in [test_1a, test_1b, test_2, test_3, test_4, test_5, test_6, test_7, test_8, test_9, test_11, test_12,
-             test_13, test_14, test_16, test_17]:
+             test_13, test_14, test_16, test_18]:
     write_dataset_and_predictions_to_json(test, 'model_bert_srl', run)
